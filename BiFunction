@@ -1,0 +1,126 @@
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+public class HigherOrderUtils {
+
+    interface NamedBiFunction<T, U, R> extends BiFunction<T, U, R> {
+        String name();
+
+    }
+
+    public static class add implements HigherOrderUtils.NamedBiFunction<Double, Double, Double> {
+        private double x;
+        private double y;
+
+        double add(double x, double y) {
+            this.x = x;
+            this.y = y;
+            return x + y;
+        }
+
+        @Override
+        public String name() {
+            return "add";
+        }
+
+        @Override
+        public Double apply(Double o, Double o2) {
+            return apply(o, o2);
+        }
+    }
+
+    public static class diff implements HigherOrderUtils.NamedBiFunction<Double, Double, Double> {
+        private double x;
+        private double y;
+
+        double diff(double x, double y) {
+            this.x = x;
+            this.y = y;
+            return x - y;
+        }
+
+        @Override
+        public String name() {
+            return "diff";
+        }
+
+        @Override
+        public Double apply(Double o, Double o2) {
+            return apply(o, o2);
+        }
+    }
+
+    public static class mult implements HigherOrderUtils.NamedBiFunction<Double, Double, Double> {
+        private double x;
+        private double y;
+
+        double mult(double x, double y) {
+            this.x = x;
+            this.y = y;
+            return x * y;
+        }
+
+        @Override
+        public String name() {
+            return null;
+        }
+
+        @Override
+        public Double apply(Double o, Double o2) {
+            return apply(o, o2);
+        }
+    }
+
+    public static class div implements HigherOrderUtils.NamedBiFunction<Double, Double, Double> {
+        private double x;
+        private double y;
+
+        double div(double x, double y) {
+            this.x = x;
+            this.y = y;
+            if (x == 0 || y == 0)
+                throw new ArithmeticException("zeros");
+            else
+                return x / y;
+        }
+
+        @Override
+        public String name() {
+            return null;
+        }
+
+        @Override
+        public Double apply(Double o, Double o2) {
+            return apply(o, o2);
+        }
+    }
+
+    public static <T> T zip(List<T> args, List<NamedBiFunction<T, T, T>> bifunctions) {
+        if(bifunctions.size() > 0 && args.size() >0) {
+            if (bifunctions.size() == args.size()) {
+                for (int i = 0; i < bifunctions.size(); i++) {
+                    args.set(i, bifunctions.get(i).apply(args.get(i), args.get(i + 1)));
+                }
+            } else if (bifunctions.size() > args.size()) {
+                for (int i = 0; i < args.size(); i++) {
+                    args.set(i + 1, bifunctions.get(i).apply(args.get(i), args.get(i + 1)));
+                }
+            } else {
+                for (int i = 0; i < bifunctions.size(); i++) {
+                    args.set(i + 1, bifunctions.get(i).apply(args.get(i), args.get(i + 1)));
+                }
+            }
+        }
+        else{
+            throw new IllegalArgumentException("invalid");
+        }
+        return args.get(args.size() - 1);
+    }
+
+    static class FunctionComposition<T, U, R> {
+        BiFunction<Function<T,U>, Function<U, R>, Function<T,R>> composition = (function1,function2) -> function1.andThen(function2);
+    }
+
+}
+
