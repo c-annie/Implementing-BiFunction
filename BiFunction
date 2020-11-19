@@ -6,7 +6,6 @@ public class HigherOrderUtils {
 
     interface NamedBiFunction<T, U, R> extends BiFunction<T, U, R> {
         String name();
-
     }
 
     public static class add implements HigherOrderUtils.NamedBiFunction<Double, Double, Double> {
